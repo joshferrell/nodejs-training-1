@@ -3,32 +3,32 @@
 
 var fs = require('fs');
 var assert = require('assert');
-
-var f = fs.readFileSync('plans.csv', 'utf8');
-
-console.log(f);
-
 var plans = [];
-var lines = f.split('\n');
 
-for (var i = 0; i < lines.length; i++) {
-    var line = lines[i].split(',');
-    plans.push({
-        planName: line[0],
-        planBenefits: line[1],
-        group: line[2]
-    });
-}
+fs.readFile('plans.csv', 'utf8', function(err, data) {
+  var lines = data.split('\n');
+  for (var i = 0; i < lines.length; i++) {
+      var line = lines[i].split(',');
+      plans.push({
+          planName: line[0],
+          planBenefits: line[1],
+          group: line[2]
+      });
+  }
 
-assert.deepEqual(plans,
-    [{
-        planName: 'Great HMO',
-        planBenefits: ' benefits package 1',
-        group: ' UCD'
-    },
-    {
-        planName: 'Silver PPO',
-        planBenefits: ' benefits package 2',
-        group: ' WHA'
-    }]
-);
+  console.log("After file read plans: ", plans);
+  assert.deepEqual(plans,
+      [{
+          planName: 'Great HMO',
+          planBenefits: ' benefits package 1',
+          group: ' UCD'
+      },
+      {
+          planName: 'Silver PPO',
+          planBenefits: ' benefits package 2',
+          group: ' WHA'
+      }]
+  );
+});
+
+console.log("Sync Plans: ", plans);
