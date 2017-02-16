@@ -12,6 +12,12 @@ var plans = [];
 var lines = f.split('\n');
 
 for (var i = 0; i < lines.length; i++) {
+    var line = lines[i].split(',');
+    plans.push({
+        planName: line[0],
+        planBenefits: line[1],
+        group: line[2]
+    });
 }
 
 assert.deepEqual(plans,
