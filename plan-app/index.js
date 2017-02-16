@@ -1,29 +1,30 @@
-var http = require('http');
-var request = require('request');
+var Express = require( "express" )
+var Request = require('request');
+
+var app = Express()
+
+var renderPage = function( plans ) {
+  return `<!doctype html>
+
+    <head>
+      <title>Plan App</title>
+    </head>
+
+    <body>
+      <h1>Hello, World</h1>
+      <ul>${ plans.map( renderPlan ).join("") }</ul>
+    </body>
+  `
+}
 
 var renderPlan = function( plan ) {
   return `<li>${ plan.planName }</li>`
 }
 
-var server = http.createServer(function(req, response) {
-
-  request.get('http://localhost:8000', function(err, planServiceResponse, body) {
-    var plans = JSON.parse(body)
-
-    response.end(`
-      <!doctype html>
-
-      <head>
-        <title>Plan App</title>
-      </head>
-
-      <body>
-        <h1>Hello, World</h1>
-        <ul>${ plans.map( renderPlan ).join("") }</ul>
-      </body>
-    `)
+app.get( "/", function( req, res ) {
+  Request.get('http://localhost:8000', function(err, planServiceResponse, body) {
+    res.end(renderPage(JSON.parse(body)))
   });
+} )
 
-});
-
-server.listen(8001);
+app.listen(8001);
