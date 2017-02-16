@@ -1,34 +1,30 @@
-// 1. Run this script
-// 2. Change this script so that plans object contains the expected value
-
+var http = require('http');
 var fs = require('fs');
-var assert = require('assert');
-var plans = [];
+var PLANS_FILE = 'plans.csv';
 
-fs.readFile('plans.csv', 'utf8', function(err, data) {
-  var lines = data.split('\n');
-  for (var i = 0; i < lines.length; i++) {
-      var line = lines[i].split(',');
-      plans.push({
-          planName: line[0],
-          planBenefits: line[1],
-          group: line[2]
-      });
-  }
+var server = http.createServer(function(req, res) {
 
-  console.log("After file read plans: ", plans);
-  assert.deepEqual(plans,
-      [{
-          planName: 'Great HMO',
-          planBenefits: ' benefits package 1',
-          group: ' UCD'
-      },
-      {
-          planName: 'Silver PPO',
-          planBenefits: ' benefits package 2',
-          group: ' WHA'
-      }]
-  );
+  fs.readFile('plans.csv', 'utf8', function(err, data) {
+    if (err) {
+      return callback(err);
+    }
+
+    var plans = [];
+    var lines = data.split('\n');
+    for (var i = 0; i < lines.length; i++) {
+      console.log(lines[i]);
+        var line = lines[i].split(',');
+        plans.push({
+            planName: line[0],
+            planBenefits: line[1],
+            group: line[2]
+        });
+    }
+
+    console.log("Plans: ", plans);
+    res.end(JSON.stringify(plans));
+  });
+
 });
 
-console.log("Sync Plans: ", plans);
+server.listen(8000);
