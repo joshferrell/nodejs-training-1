@@ -1,28 +1,29 @@
 var http = require('http');
+var request = require('request');
 
 var renderPlan = function( plan ) {
   return `<li>${ plan.planName }</li>`
 }
 
-var server = http.createServer(function(req, res) {
+var server = http.createServer(function(req, response) {
 
-  var plans = [
-    {"planName":"Great HMO","planBenefits":"benefits package 1","group":"UCD"},
-    {"planName":"Silver PPO","planBenefits":"benefits package 2","group":"WHA"}
-  ]
+  request.get('http://localhost:8000', function(err, planServiceResponse, body) {
+    var plans = JSON.parse(body)
 
-  res.end(`
-    <!doctype html>
+    response.end(`
+      <!doctype html>
 
-    <head>
-      <title>Plan App</title>
-    </head>
+      <head>
+        <title>Plan App</title>
+      </head>
 
-    <body>
-      <h1>Hello, World</h1>
-      <ul>${ plans.map( renderPlan ).join("") }</ul>
-    </body>
-  `)
+      <body>
+        <h1>Hello, World</h1>
+        <ul>${ plans.map( renderPlan ).join("") }</ul>
+      </body>
+    `)
+  });
+
 });
 
 server.listen(8001);
