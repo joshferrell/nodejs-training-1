@@ -4,7 +4,7 @@ var Session = require( "express-session" )
 var BodyParser = require( "body-parser" )
 var Sqlite = require( "sqlite3" ).verbose()
 
-var PlanPage = require( "./PlanPage" )
+var IndexPage = require( "./IndexPage" )
 var LoginPage = require( "./LoginPage" )
 
 var app = Express()
@@ -24,7 +24,6 @@ app.post( "/login", function( req, res ) {
 
   db.serialize(function() {
     db.all( sql, [ req.body.id ], function(err, rows) {
-      console.log( "members", rows )
       if(rows.length > 0) {
         req.session.user = { id: req.body.id }
         res.redirect( "/" )
@@ -51,10 +50,9 @@ app.get( "/", function( req, res ) {
         }
         else {
           var mergedPlans = JSON.parse( body ).map( function( plan ) {
-            console.log( plan, row )
             return Object.assign( plan, { isDefault: plan.planName === row.default_plan } )
           } )
-          res.end(PlanPage.render( mergedPlans ) )
+          res.end(IndexPage.render( mergedPlans ) )
         }
       } )
     } )
