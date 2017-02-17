@@ -8,7 +8,7 @@ var IndexPage = require( "./IndexPage" )
 var LoginPage = require( "./LoginPage" )
 
 var app = Express()
-var db = new Sqlite.Database( "./tmp/members.db" )
+var db = new Sqlite.Database( "members.db" )
 
 app.use(
   Session( { secret: "supersecret", saveUninitialized: true, resave: true } ) )

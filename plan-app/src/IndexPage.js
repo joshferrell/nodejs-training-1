@@ -19,7 +19,8 @@ exports.render  = function( plans ) {
     </head>
 
     <body>
-      <h1>Hello, World</h1>
+      <h1>Your Plans</h1>
+      <p>Select a default plan</p>
       <form action="/plans" method="POST">
         <ul>${ plans.map( renderPlan ).join("") }</ul>
         <button>Update</button>
