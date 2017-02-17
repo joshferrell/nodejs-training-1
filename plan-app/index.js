@@ -8,6 +8,7 @@ var PlanPage = require( "./PlanPage" )
 var LoginPage = require( "./LoginPage" )
 
 var app = Express()
+var db = new Sqlite.Database( "./tmp/members.db" )
 
 app.use(
   Session( { secret: "supersecret", saveUninitialized: true, resave: true } ) )
@@ -19,7 +20,6 @@ app.get( "/login", function( req, res ) {
 } )
 
 app.post( "/login", function( req, res ) {
-  var db = new Sqlite.Database( "./tmp/members.db" )
   var sql = "SELECT * FROM members WHERE id = ?"
 
   db.serialize(function() {
@@ -34,8 +34,6 @@ app.post( "/login", function( req, res ) {
       }
     } )
   } )
-
-  db.close()
 } )
 
 app.get( "/", function( req, res ) {
@@ -44,7 +42,6 @@ app.get( "/", function( req, res ) {
   }
   else {
     Request.get('http://localhost:8000', function(err, planServiceResponse, body) {
-      var db = new Sqlite.Database( "./tmp/members.db" )
       var sql = "SELECT * FROM members WHERE id = ?"
       var memberId = req.session.user.id
 
@@ -60,8 +57,6 @@ app.get( "/", function( req, res ) {
           res.end(PlanPage.render( mergedPlans ) )
         }
       } )
-
-      db.close()
     } )
   }
 } )
@@ -71,28 +66,20 @@ app.post( "/plans", function( req, res ) {
     res.redirect( "/login" )
   }
   else {
-    var db = new Sqlite.Database( "./tmp/members.db" )
-
     var sql = "UPDATE members SET default_plan = ? WHERE id = ?"
     var params = [ req.body.defaultPlan, req.session.user.id ]
 
     db.run( sql, params, function( err ) {
       res.redirect( "/" )
     } )
-    db.close()
   }
 } )
 
 app.listen(8001)
 
-var db = new Sqlite.Database( "./tmp/members.db" )
-
 db.serialize( function() {
-  db.exec("DROP TABLE IF EXISTS members", function( err ) {
-    db.exec("CREATE TABLE members(id varchar(255), name varchar(255), default_plan varchar(255))", function( err ) {
-      db.exec("INSERT INTO members(id, name, default_plan) VALUES('1', 'john', '')", function( err ) {
-          console.log( "created database and inserted data" )
-      } )
-    } )
-  } )
+  db.run("DROP TABLE IF EXISTS members" )
+  db.run("CREATE TABLE members(id varchar(255), name varchar(255), default_plan varchar(255))")
+  db.run("INSERT INTO members(id, name, default_plan) VALUES('1', 'john', '')")
+  console.log( "databse was setup!" )
 } )
