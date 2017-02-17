@@ -24,8 +24,9 @@ app.post( "/login", function( req, res ) {
 
   db.serialize(function() {
     db.all( sql, [ req.body.id ], function(err, rows) {
+      console.log( "members", rows )
       if(rows.length > 0) {
-        req.session.user = { id: "1" }
+        req.session.user = { id: req.body.id }
         res.redirect( "/" )
       }
       else {
@@ -59,6 +60,8 @@ app.get( "/", function( req, res ) {
           res.end(PlanPage.render( mergedPlans ) )
         }
       } )
+
+      db.close()
     } )
   }
 } )
@@ -85,13 +88,11 @@ app.listen(8001)
 var db = new Sqlite.Database( "./tmp/members.db" )
 
 db.serialize( function() {
-  db.exec("DROP TABLE IF EXISTS member", function( err ) {
+  db.exec("DROP TABLE IF EXISTS members", function( err ) {
     db.exec("CREATE TABLE members(id varchar(255), name varchar(255), default_plan varchar(255))", function( err ) {
       db.exec("INSERT INTO members(id, name, default_plan) VALUES('1', 'john', '')", function( err ) {
-        console.log( "created database and inserted data" )
+          console.log( "created database and inserted data" )
       } )
     } )
   } )
 } )
-
-db.close()
