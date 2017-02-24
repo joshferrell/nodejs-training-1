@@ -1,27 +1,31 @@
-var Express = require( "express" )
-var Session = require( "express-session" )
-var BodyParser = require( "body-parser" )
+var Express = require("express")
+var Session = require("express-session")
+var BodyParser = require("body-parser")
 
 // initializing express application
 var app = Express()
 
 // setting up express middleware
-app.use( Session( { secret: "supersecret", resave: true, saveUninitialized: true } ) )
-app.use( BodyParser.urlencoded( { extended: true } ) )
+app.use(Session({secret: "supersecret", resave: true, saveUninitialized: true}))
+app.use(BodyParser.urlencoded({extended: true}))
 
 // setting up root router
-app.get( "/", function( req, res ) {
-  if ( req.session.user === undefined ) {
-    res.redirect( "/login" )
-  }
-  else {
-    res.send( `<h1>Welcome ${ req.session.user.name }</h1>` )
-  }
-} )
+app.get("/", function(req, res) {
+    if (req.session.user === undefined) {
+        res.redirect("/login")
+    } else {
+        res.send(`
+        <h1>Welcome ${req.session.user.name}</h1>
+        <form action="/logout" method="GET">
+            <button type="submit">Logout</button>
+        </form>
+    `)
+    }
+})
 
 // setting up login page router
-app.get( "/login", function( req, res ) {
-  res.send( `
+app.get("/login", function(req, res) {
+    res.send(`
     <!doctype html>
 
     <head>
@@ -31,28 +35,35 @@ app.get( "/login", function( req, res ) {
     <body>
       <h1>Login</h1>
       <p>Please enter your id to login</p>
-      <form action="/login" method="POST">
+      <form action="/login" method="GET">
         Id: <input type="text" name="id"><button>Submit</button>
       </form>
     </body>
-  ` )
-} )
+  `)
+})
+
+app.get("/logout", function(req, res) {
+    req.session.destroy()
+    res.redirect("/")
+})
 
 // setup route for logging in
-app.post( "/login", function( req, res ) {
-  var memberId = req.body.id
+app.post("/login", function(req, res) {
+    var memberId = req.body.id
 
-  if( memberId && memberId == "1" ) {
-    req.session.user = { id: "1", name: "john" }
-    res.redirect( "/" )
-  }
-  else {
-    res.send(`
+    if (memberId && memberId == "1") {
+        req.session.user = {
+            id: "1",
+            name: "john"
+        }
+        res.redirect("/")
+    } else {
+        res.send(`
       <h1>Error</h1>
       <p>I don't know who you are, click <a href="/">here</a> to start again!</p>
     `)
-  }
-} )
+    }
+})
 
 // starting express application
 app.listen(8001)
