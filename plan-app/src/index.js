@@ -1,6 +1,9 @@
 var Express = require("express")
 var Session = require("express-session")
 var BodyParser = require("body-parser")
+var Sqlite = require("sqlite3").verbose()
+
+var db = new Sqlite.Database("members.db")
 
 // initializing express application
 var app = Express()
@@ -35,7 +38,7 @@ app.get("/login", function(req, res) {
     <body>
       <h1>Login</h1>
       <p>Please enter your id to login</p>
-      <form action="/login" method="GET">
+      <form action="/login" method="POST">
         Id: <input type="text" name="id"><button>Submit</button>
       </form>
     </body>
@@ -43,26 +46,26 @@ app.get("/login", function(req, res) {
 })
 
 app.get("/logout", function(req, res) {
-    req.session.destroy()
-    res.redirect("/")
+    req.session.user = undefined
+    res.redirect('/login')
 })
 
 // setup route for logging in
 app.post("/login", function(req, res) {
-    var memberId = req.body.id
-
-    if (memberId && memberId == "1") {
-        req.session.user = {
-            id: "1",
-            name: "john"
+    db.get("SELECT * FROM members WHERE id = ?", [req.body.id], function(err, member) {
+        if(member) {
+            req.session.user = {
+                id: member.id,
+                name: member.name
+            }
+            res.redirect("/")
+        } else {
+            res.send(`
+              <h1>Error</h1>
+              <p>I don't know who you are, click <a href="/">here</a> to start again!</p>
+            `)
         }
-        res.redirect("/")
-    } else {
-        res.send(`
-      <h1>Error</h1>
-      <p>I don't know who you are, click <a href="/">here</a> to start again!</p>
-    `)
-    }
+    })
 })
 
 // starting express application

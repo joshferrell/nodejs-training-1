@@ -6,6 +6,8 @@ db.serialize(function() {
     db.run("DROP TABLE IF EXISTS members")
     db.run("CREATE TABLE members(id varchar(255), name varchar(255), default_plan varchar(255))")
     db.run("INSERT INTO members(id, name, default_plan) VALUES('1', 'john', '')")
+    db.run("INSERT INTO members(id, name, default_plan) VALUES('2', 'jane', '')")
+
 
     console.log("databse was setup!")
 
