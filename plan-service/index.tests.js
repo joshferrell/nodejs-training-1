@@ -7,11 +7,13 @@ request.get('http://localhost:8000', function(err, res, body) {
         {
             "planName": "Great HMO",
             "planBenefits": "benefits package 1",
-            "group": "UCD"
+            "group": "UCD",
+            "memberId": "1"
         }, {
             "planName": "Silver PPO",
             "planBenefits": "benefits package 2",
-            "group": "WHA"
+            "group": "WHA",
+            "memberId": "1"
         }
     ]);
 });

@@ -1,0 +1,17 @@
+doctype html
+html
+  head
+    title Plan App
+  body
+    h1 Welcome #{name}
+    h2 Change your plan
+    form(action="/plan" method="POST")
+        each val in plans
+            .form-group
+                label
+                    input(type='radio', name='plan', value=val)
+                    | #{val}
+        button(type="submit") Change Plan
+    hr
+    form(action="/logout" method="GET")
+        button(type="submit") Logout

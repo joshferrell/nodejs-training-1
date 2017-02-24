@@ -2,6 +2,7 @@ var Express = require("express")
 var Session = require("express-session")
 var BodyParser = require("body-parser")
 var Sqlite = require("sqlite3").verbose()
+const request = require("request")
 
 var db = new Sqlite.Database("members.db")
 
@@ -19,12 +20,13 @@ app.get("/", function(req, res) {
     if (req.session.user === undefined) {
         res.redirect("/login")
     } else {
-        res.send(`
-        <h1>Welcome ${req.session.user.name}</h1>
-        <form action="/logout" method="GET">
-            <button type="submit">Logout</button>
-        </form>
-    `)
+        request.get("http://localhost:8000", function(err, response, body) {
+            const planNames = JSON.parse(body).map(function(plan) {
+                return plan.planName
+            })
+
+            res.render("plans", { plans: planNames, name: req.session.user.name })
+        })
     }
 })
 
