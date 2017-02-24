@@ -1,7 +1,6 @@
 var isChecked = function( plan ) {
   return plan.isDefault ? "checked" : ""
 }
-
 var renderPlan = function( plan ) {
   return `<li>
     <span>${ plan.planName }</span>
@@ -20,6 +19,9 @@ exports.render  = function( plans ) {
 
     <body>
       <h1>Your Plans</h1>
+      <form action="/logout" method="POST">
+        <button>Logout</button>
+      </form>
       <p>Select a default plan</p>
       <form action="/plans" method="POST">
         <ul>${ plans.map( renderPlan ).join("") }</ul>
