@@ -5,7 +5,7 @@ var server = http.createServer(function(req, res) {
 
   fs.readFile( "plans.csv", "utf8", function(err, data) {
     if (err) {
-      return callback(err)
+      res.send(JSON.stringify(err))
     }
 
     var plans = data
