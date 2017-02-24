@@ -1,4 +1,3 @@
-var Request = require( "request" )
 var Express = require( "express" )
 var Session = require( "express-session" )
 var BodyParser = require( "body-parser" )
