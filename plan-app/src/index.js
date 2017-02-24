@@ -1,5 +1,5 @@
-var Express = require( "express" )
 var Request = require( "request" )
+var Express = require( "express" )
 var Session = require( "express-session" )
 var BodyParser = require( "body-parser" )
 var Sqlite = require( "sqlite3" ).verbose()
@@ -10,13 +10,26 @@ var LoginPage = require( "./LoginPage" )
 var app = Express()
 var db = new Sqlite.Database( "members.db" )
 
-app.use(
-  Session( { secret: "supersecret", saveUninitialized: true, resave: true } ) )
+var assignDefaultPlan = function( defaultName ) {
+  return function( plan ) {
+    return Object.assign( plan
+    , { checked: plan.planName === defaultName ? "checked" : "" } )
+  }
+}
 
+
+app.set( "views", __dirname + "/views" )
+
+app.use( Session( { secret: "supersecret" } ) )
 app.use( BodyParser.urlencoded( { extended: true } ) )
 
 app.get( "/login", function( req, res ) {
   res.end( LoginPage.render() )
+} )
+
+app.post( "/logout", function( req, res ) {
+  req.session.user = undefined
+  res.redirect( "/" )
 } )
 
 app.post( "/login", function( req, res ) {
@@ -29,7 +42,10 @@ app.post( "/login", function( req, res ) {
         res.redirect( "/" )
       }
       else {
-        res.end("<h1>I don't know who you are</h1>")
+        res.end(`
+          <h1>Error</h1>
+          <p>I don't know who you are, click <a href="/">here</a> to start again!</p>
+        `)
       }
     } )
   } )
@@ -40,7 +56,7 @@ app.get( "/", function( req, res ) {
     res.redirect( "/login" )
   }
   else {
-    Request.get('http://localhost:8000', function(err, planServiceResponse, body) {
+    Request.get('http://localhost:8000', function(err, planServiceResponse, plans ) {
       var sql = "SELECT * FROM members WHERE id = ?"
       var memberId = req.session.user.id
 
@@ -49,10 +65,13 @@ app.get( "/", function( req, res ) {
           res.end("<h1>I don't know who you are</h1>")
         }
         else {
-          var mergedPlans = JSON.parse( body ).map( function( plan ) {
-            return Object.assign( plan, { isDefault: plan.planName === row.default_plan } )
-          } )
-          res.end(IndexPage.render( mergedPlans ) )
+          var viewModel = {
+            plans: JSON
+              .parse( plans )
+              .map( assignDefaultPlan( row.default_plan ) )
+          }
+
+          res.render( "index.hbs", viewModel )
         }
       } )
     } )

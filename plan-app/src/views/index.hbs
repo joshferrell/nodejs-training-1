@@ -1,0 +1,29 @@
+<!doctype html>
+
+<head>
+  <title>Plan App</title>
+</head>
+
+<body>
+  <h1>Your Plans</h1>
+  <form action="/logout" method="POST">
+    <button>Logout</button>
+  </form>
+
+  <p>Select a default plan</p>
+
+  <form action="/plans" method="post">
+    <ul>
+    {{#plans}}
+      <li>
+        <span>{{planName}}</span>
+        <span>
+          <input type="radio" name="defaultPlan"
+            value="{{planName}}" {{ checked }}>
+        </span>
+      </li>
+    {{/plans}}
+    </ul>
+    <button>Update</button>
+  </form>
+</body>

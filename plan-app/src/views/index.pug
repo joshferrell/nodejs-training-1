@@ -1,0 +1,24 @@
+mixin viewPlan(plan)
+  li
+    span= plan.planName
+    span
+      input(type="radio" name="defaultPlan" value=plan.planName
+        checked=plan.isDefault)
+
+doctype html
+
+head
+  title Plan App
+
+body
+  h1 Your Plans
+  form(action="/logout" method="POST")
+    button Logout
+
+  p Select a default plan
+
+  form(action="/plans" method="post")
+    ul
+      each plan in plans
+        +viewPlan(plan)
+    button Update
