@@ -7,6 +7,8 @@ var db = new Sqlite.Database("members.db")
 
 // initializing express application
 var app = Express()
+app.set("views", __dirname + "/views")
+app.set("view engine", "pug")
 
 // setting up express middleware
 app.use(Session({secret: "supersecret", resave: true, saveUninitialized: true}))
@@ -28,26 +30,12 @@ app.get("/", function(req, res) {
 
 // setting up login page router
 app.get("/login", function(req, res) {
-    res.send(`
-    <!doctype html>
-
-    <head>
-      <title>Plan App</title>
-    </head>
-
-    <body>
-      <h1>Login</h1>
-      <p>Please enter your id to login</p>
-      <form action="/login" method="POST">
-        Id: <input type="text" name="id"><button>Submit</button>
-      </form>
-    </body>
-  `)
+    res.render("login.pug")
 })
 
 app.get("/logout", function(req, res) {
     req.session.user = undefined
-    res.redirect('/login')
+    res.redirect("/login")
 })
 
 // setup route for logging in

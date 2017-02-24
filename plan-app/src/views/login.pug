@@ -1,0 +1,12 @@
+doctype html
+html
+  head
+    title Plan App
+  body
+    h1 Login
+    p Please enter your id to login
+    form(action="/login" method="POST")
+        div.form-group
+            label(for="id") Id:
+            input(type='text', name='id')
+        button(type="submit") submit
