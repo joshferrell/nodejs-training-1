@@ -7,7 +7,7 @@ var BodyParser = require( "body-parser" )
 var app = Express()
 
 // setting up express middleware
-app.use( Session( { secret: "supersecret" } ) )
+app.use( Session( { secret: "supersecret", resave: true, saveUninitialized: true } ) )
 app.use( BodyParser.urlencoded( { extended: true } ) )
 
 // setting up root router
