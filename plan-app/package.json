@@ -1,19 +1,20 @@
 {
-  "name": "plan-app",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "nodemon": "^1.11.0"
-  },
-  "dependencies": {
-    "body-parser": "^1.16.1",
-    "express": "^4.14.1",
-    "express-session": "^1.15.1"
-  }
+    "name": "plan-app",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "dev-server": "nodemon src/index.js",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "nodemon": "^1.11.0"
+    },
+    "dependencies": {
+        "body-parser": "^1.16.1",
+        "express": "^4.14.1",
+        "express-session": "^1.15.1"
+    }
 }
